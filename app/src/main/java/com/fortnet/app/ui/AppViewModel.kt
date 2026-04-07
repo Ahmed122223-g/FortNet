@@ -70,7 +70,8 @@ class AppViewModel(private val context: Context) : ViewModel() {
 
     fun checkForUpdates() {
         val manager = UpdateManager(context)
-        val updateUrl = "https://raw.githubusercontent.com/Ahmed122223-g/FortNet/main/version.json"
+        val timestamp = System.currentTimeMillis()
+        val updateUrl = "https://raw.githubusercontent.com/Ahmed122223-g/FortNet/main/version.json?t=$timestamp"
         
         android.widget.Toast.makeText(context, "جاري فحص التحديثات...", android.widget.Toast.LENGTH_SHORT).show()
         
@@ -78,8 +79,10 @@ class AppViewModel(private val context: Context) : ViewModel() {
             if (info != null) {
                 _updateAvailable.value = info
             } else {
-                // To avoid showing "No Update" on every startup, we'd ideally only show it for manual clicks.
-                // For now, simple toast is okay.
+                // التشغيل في الخيط الرئيسي للتنبيهات
+                viewModelScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+                    android.widget.Toast.makeText(context, "أنت تستخدم آخر إصدار بالفعل ✅", android.widget.Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

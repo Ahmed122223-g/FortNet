@@ -51,13 +51,14 @@ class UpdateManager(private val context: Context) {
     private val DOWNLOAD_TITLE = "FortNet Update"
 
     fun checkForUpdates(url: String, onResult: (UpdateInfo?) -> Unit) {
-        FortLogger.d("Checking for updates via DoH...")
+        FortLogger.d("Checking for updates via DoH: $url")
         val request = Request.Builder().url(url).build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                FortLogger.e("Update check failed", e)
+                FortLogger.e("Update check failed (network)", e)
                 onResult(null)
             }
+// ... rest preserved
 
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string()
