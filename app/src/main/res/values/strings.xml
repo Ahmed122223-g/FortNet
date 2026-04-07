@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FortNet</string>
+    <string name="vpn_permission_title">مطلوب إذن VPN</string>
+    <string name="vpn_permission_msg">لقطع الإنترنت، يرجى السماح بالوصول إلى VPN.</string>
+    <string name="search_hint">ابحث عن تطبيق…</string>
+    <string name="subtitle">حماية تطبيقاتك</string>
+    <string name="no_apps">لا توجد تطبيقات</string>
+    <string name="timer_title">مؤقت الحظر</string>
+    <string name="schedule_title">جدول الحظر</string>
+    <string name="save">حفظ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="min_30">30 دقيقة</string>
+    <string name="hour_1">ساعة</string>
+    <string name="hours_2">ساعتان</string>
+    <string name="hours_3">3 ساعات</string>
+    <string name="custom">مخصص</string>
+    <string name="remaining">متبقي</string>
+    <string name="from_label">من</string>
+    <string name="to_label">إلى</string>
+    <string name="notification_title">FortNet نشط</string>
+    <string name="notification_text">يتم مراقبة وصول التطبيقات</string>
+    <string name="notification_channel">خدمة FortNet</string>
+    <string name="saturday">السبت</string>
+    <string name="sunday">الأحد</string>
+    <string name="monday">الاثنين</string>
+    <string name="tuesday">الثلاثاء</string>
+    <string name="wednesday">الأربعاء</string>
+    <string name="thursday">الخميس</string>
+    <string name="friday">الجمعة</string>
+    <string name="cat_all">الكل</string>
+    <string name="cat_social">تواصل</string>
+    <string name="cat_games">ألعاب</string>
+    <string name="cat_entertainment">ترفيه</string>
+    <string name="cat_tools">أدوات</string>
+    <string name="cat_other">أخرى</string>
+    <string name="sort_name_asc">الاسم أ-ي</string>
+    <string name="sort_name_desc">الاسم ي-أ</string>
+    <string name="sort_date_new">الأحدث</string>
+    <string name="sort_date_old">الأقدم</string>
+    <string name="filter_all">الكل</string>
+    <string name="filter_blocked">المحظورة</string>
+    <string name="filter_unblocked">المسموحة</string>
+    <string name="set_timer">تعيين مؤقت</string>
+    <string name="cancel_timer">إلغاء المؤقت</string>
+    <string name="timer_minutes">دقيقة</string>
+</resources>
