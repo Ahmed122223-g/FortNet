@@ -68,13 +68,18 @@ class AppViewModel(private val context: Context) : ViewModel() {
         _isBatteryOptimized.value = !powerManager.isIgnoringBatteryOptimizations(context.packageName)
     }
 
-    private fun checkForUpdates() {
+    fun checkForUpdates() {
         val manager = UpdateManager(context)
         val updateUrl = "https://raw.githubusercontent.com/Ahmed122223-g/FortNet/main/version.json"
+        
+        android.widget.Toast.makeText(context, "جاري فحص التحديثات...", android.widget.Toast.LENGTH_SHORT).show()
         
         manager.checkForUpdates(updateUrl) { info ->
             if (info != null) {
                 _updateAvailable.value = info
+            } else {
+                // To avoid showing "No Update" on every startup, we'd ideally only show it for manual clicks.
+                // For now, simple toast is okay.
             }
         }
     }

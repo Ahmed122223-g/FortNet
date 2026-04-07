@@ -81,6 +81,13 @@ fun AppListScreen(
                             Text("$blockedCount محظور", color = FortNetColors.Blocked, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                         }
                     }
+                    Spacer(Modifier.width(8.dp))
+                    IconButton(
+                        onClick = { viewModel.checkForUpdates() },
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(Icons.Default.Sync, contentDescription = "تحديث", tint = FortNetColors.TextSecondary, modifier = Modifier.size(20.dp))
+                    }
                 }
                 Text("حماية تطبيقاتك", color = FortNetColors.TextSecondary, fontSize = 14.sp, modifier = Modifier.padding(start = 42.dp))
             }
