@@ -95,49 +95,17 @@ class UpdateManager(private val context: Context) {
     }
 
     fun downloadAndInstall(updateUrl: String) {
-        val destination = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "fortnet_update.apk")
-        if (destination.exists()) destination.delete()
-
-        val request = DownloadManager.Request(Uri.parse(updateUrl))
-            .setTitle(DOWNLOAD_TITLE)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationUri(Uri.fromFile(destination))
-
-        val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val downloadId = dm.enqueue(request)
-
-        val onComplete = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (id == downloadId) {
-                    installApk(destination)
-                    context.unregisterReceiver(this)
-                }
-            }
-        }
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_EXPORTED)
-        } else {
-            @Suppress("UnspecifiedRegisterReceiverFlag")
-            context.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        }
-        
-        Toast.makeText(context, "بدأ التحميل...", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun installApk(file: File) {
         try {
-            val authority = "${context.packageName}.provider"
-            val uri = FileProvider.getUriForFile(context, authority, file)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "application/vnd.android.package-archive")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            // فتح رابط التحميل في المتصفح بدلاً من التثبيت التلقائي
+            // هذا أكثر أماناً ولا يحتاج لصلاحية REQUEST_INSTALL_PACKAGES
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl)).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(intent)
+            Toast.makeText(context, "جاري فتح رابط التحميل...", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-            Toast.makeText(context, "فشل في تشغيل المثبت: ${e.message}", Toast.LENGTH_LONG).show()
+            FortLogger.e("Failed to open download link", e)
+            Toast.makeText(context, "فشل في فتح الرابط: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 }
