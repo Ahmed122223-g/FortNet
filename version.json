@@ -1,6 +1,6 @@
 {
-  "versionCode": 3,
-  "versionName": "3.0",
+  "versionCode": 4,
+  "versionName": "3.1",
   "downloadUrl": "https://raw.githubusercontent.com/Ahmed122223-g/FortNet/main/FortNet.apk",
-  "releaseNotes": "اصلاح مشكلة حظر التطبيقات"
+  "releaseNotes": "اصلاح مشكلة حظر التطبيقات وتحسينات أمنية"
 }
