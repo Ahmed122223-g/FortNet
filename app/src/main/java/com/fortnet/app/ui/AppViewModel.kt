@@ -138,6 +138,40 @@ class AppViewModel(private val context: Context) : ViewModel() {
     fun setSortOption(o: SortOption) { _sortOption.value = o }
     fun setFilterOption(o: FilterOption) { _filterOption.value = o }
 
+    fun blockAll(appsList: List<AppInfo>) {
+        viewModelScope.launch {
+            try {
+                for (app in appsList) {
+                    if (!app.isBlocked && ValidationUtil.isValidPackageName(app.packageName)) {
+                        val cur = db.appSettingDao().getSetting(app.packageName)
+                        if (cur == null) {
+                            db.appSettingDao().insertSetting(AppSetting(app.packageName, true))
+                        } else {
+                            db.appSettingDao().updateSetting(cur.copy(isBlocked = true))
+                        }
+                    }
+                }
+                FortLogger.i("Blocked all ${appsList.size} visible apps")
+            } catch (e: Exception) {
+                FortLogger.e("Failed to block all", e)
+            }
+        }
+    }
+
+    fun unblockAll() {
+        viewModelScope.launch {
+            try {
+                val settings = db.appSettingDao().getAllSettingsSync()
+                for (s in settings) {
+                    db.appSettingDao().updateSetting(s.copy(isBlocked = false, timerEndTime = 0))
+                }
+                FortLogger.i("Unblocked all apps")
+            } catch (e: Exception) {
+                FortLogger.e("Failed to unblock all", e)
+            }
+        }
+    }
+
     fun toggleBlock(app: AppInfo) {
         if (!ValidationUtil.isValidPackageName(app.packageName)) {
             FortLogger.e("Invalid package name: ${app.packageName}")

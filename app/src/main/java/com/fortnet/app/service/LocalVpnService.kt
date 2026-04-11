@@ -81,38 +81,45 @@ class LocalVpnService : VpnService() {
             return
         }
 
-        val builder = Builder()
-            .setSession("FortNet Firewall")
-            .addAddress("10.0.0.1", 32)
-            .addRoute("0.0.0.0", 0) // توجيه حركة المرور المختارة للـ VPN (Blackhole)
-            .setBlocking(true)
-
-        // تطبيقات يجب ألا تمر عبر الـ VPN أبداً لتجنب تعليق النظام
-        val criticalApps = listOf(
+        // تطبيقات يجب ألا يتم حظرها أبداً لتجنب تعليق النظام
+        val criticalApps = setOf(
             packageName,                  // تطبيقنا نفسه
             "com.android.vending",        // متجر جوجل
             "com.google.android.gms",     // خدمات جوجل
             "com.android.providers.media" // خدمات الميديا
         )
 
-        for (critical in criticalApps) {
-            try {
-                builder.addDisallowedApplication(critical)
-            } catch (_: Exception) {}
+        // تصفية التطبيقات الحيوية من قائمة الحظر
+        val safeBlockedApps = blockedApps.filter { it !in criticalApps }
+
+        if (safeBlockedApps.isEmpty()) {
+            FortLogger.d("No safe apps to block after filtering critical apps")
+            closeVpn()
+            return
         }
 
-        for (packageName in blockedApps) {
+        val builder = Builder()
+            .setSession("FortNet Firewall")
+            .addAddress("10.0.0.1", 32)
+            .addRoute("0.0.0.0", 0) // توجيه حركة المرور المختارة للـ VPN (Blackhole)
+            .setBlocking(true)
+
+        // مهم جداً: نستخدم addAllowedApplication فقط
+        // هذا يعني أن التطبيقات المحظورة فقط تمر عبر الـ VPN (الثقب الأسود)
+        // وباقي التطبيقات تتصل بالإنترنت بشكل طبيعي تماماً
+        for (pkg in safeBlockedApps) {
             try {
-                builder.addAllowedApplication(packageName)
+                builder.addAllowedApplication(pkg)
+                FortLogger.d("Blocking: $pkg")
             } catch (e: Exception) {
-                FortLogger.w("Could not add $packageName to VPN: ${e.message}")
+                FortLogger.w("Could not add $pkg to VPN: ${e.message}")
             }
         }
 
         try {
             closeVpn()
             vpnInterface = builder.establish()
-            FortLogger.i("VPN Interface established successfully")
+            FortLogger.i("VPN Interface established - blocking ${safeBlockedApps.size} apps only")
         } catch (e: Exception) {
             FortLogger.e("CRITICAL: Failed to establish VPN interface", e)
             closeVpn()

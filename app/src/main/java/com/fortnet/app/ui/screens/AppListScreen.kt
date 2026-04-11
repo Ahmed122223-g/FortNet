@@ -268,6 +268,61 @@ fun AppListScreen(
                     modifier = Modifier.align(Alignment.CenterVertically))
             }
 
+            // ── Bulk Actions ──
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // زر عرض المحظورة فقط (اختصار سريع)
+                val isShowingBlocked = filterOption == FilterOption.BLOCKED
+                AssistChip(
+                    onClick = {
+                        viewModel.setFilterOption(
+                            if (isShowingBlocked) FilterOption.ALL else FilterOption.BLOCKED
+                        )
+                    },
+                    label = { Text(if (isShowingBlocked) "عرض الكل" else "المحظورة فقط", fontSize = 12.sp) },
+                    leadingIcon = { Icon(
+                        if (isShowingBlocked) Icons.Default.Visibility else Icons.Default.Block,
+                        contentDescription = null, modifier = Modifier.size(16.dp)
+                    ) },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = if (isShowingBlocked) FortNetColors.Blocked.copy(alpha = 0.2f) else FortNetColors.CardGlass,
+                        labelColor = if (isShowingBlocked) FortNetColors.Blocked else FortNetColors.TextSecondary,
+                        leadingIconContentColor = if (isShowingBlocked) FortNetColors.Blocked else FortNetColors.TextSecondary
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    border = null
+                )
+                Spacer(Modifier.weight(1f))
+                // حظر الكل
+                AssistChip(
+                    onClick = { viewModel.blockAll(apps) },
+                    label = { Text("حظر الكل", fontSize = 12.sp) },
+                    leadingIcon = { Icon(Icons.Default.DoNotDisturb, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = FortNetColors.Blocked.copy(alpha = 0.15f),
+                        labelColor = FortNetColors.Blocked,
+                        leadingIconContentColor = FortNetColors.Blocked
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    border = null
+                )
+                // فك حظر الكل
+                AssistChip(
+                    onClick = { viewModel.unblockAll() },
+                    label = { Text("فك الكل", fontSize = 12.sp) },
+                    leadingIcon = { Icon(Icons.Default.LockOpen, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = FortNetColors.Primary.copy(alpha = 0.15f),
+                        labelColor = FortNetColors.Primary,
+                        leadingIconContentColor = FortNetColors.Primary
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    border = null
+                )
+            }
+
             // ── App List ──
             if (apps.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
